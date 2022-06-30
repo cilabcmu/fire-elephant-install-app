@@ -28,8 +28,8 @@ const Form = () => {
             />
           </div>
           <div className="w-2/4  md:w-1/2 px-3">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="long">
-              longitude
+            <label className="font-prompt block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="long">
+              ลองติจูด
             </label>
             <input
               className="appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white "
@@ -41,8 +41,8 @@ const Form = () => {
         </div>
       </form>
 
-      <button className={`bg-blue-500 hover:bg-blue-700 w-32 text-white font-bold py-2 px-4 rounded-lg`} type="button">
-        Sign In
+      <button className={`font-prompt bg-blue-500 hover:bg-blue-700 w-44 text-white py-2 px-4 rounded-lg`} type="button">
+        ตรวจสอบ
       </button>
     </div>
   );
