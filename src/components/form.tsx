@@ -1,6 +1,43 @@
 import { COLOR } from "../public/color";
 
+const buttonStatus: (status: string) => JSX.Element = (status: string) => {
+  const buttonStyle = "w-44 text-white py-2 px-4 rounded-lg";
+  switch (status) {
+    case "waitId":
+      return (
+        <button className={`${buttonStyle} bg-blue-500 hover:bg-blue-600`} type="button">
+          ตรวจสอบ
+        </button>
+      );
+    case "loading":
+      return (
+        <button className={`${buttonStyle} bg-blue-500 disabled:bg-blue-300  animate-bounce`} type="button" disabled={true}>
+          กำลังตรวจสอบ
+        </button>
+      );
+    case "found":
+      return (
+        <button className={`${buttonStyle} bg-green-500 hover:bg-green-600`} type="button">
+          ล้างข้อมูล
+        </button>
+      );
+    case "notFound":
+      return (
+        <button className={`${buttonStyle} bg-orange-500 hover:bg-orange-600`} type="button">
+          ตรวจสอบอีกครั้ง
+        </button>
+      );
+    default:
+      return (
+        <button className={`${buttonStyle} bg-red-500 hover:bg-red-600`} type="button">
+          ตรวจสอบอีกครั้ง
+        </button>
+      );
+  }
+};
+
 const Form = () => {
+  const status: string = "loading";
   return (
     <div className="flex flex-col justify-center items-center w-9/12 ">
       <form className="w-full mb-3">
@@ -40,10 +77,7 @@ const Form = () => {
           </div>
         </div>
       </form>
-
-      <button className={`bg-blue-500 hover:bg-blue-700 w-44 text-white py-2 px-4 rounded-lg`} type="button">
-        ตรวจสอบ
-      </button>
+      {buttonStatus(status)}
     </div>
   );
 };
