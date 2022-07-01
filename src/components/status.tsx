@@ -36,7 +36,7 @@ const statusIcon = (status: string) => {
           <div className={`${boxStyle} border-green-500`}>
             <FontAwesomeIcon className="h-24 text-green-500" icon={faLocationDot} />
           </div>
-          <div className={`${textStyle}`}>ติดตั้งสำเร็จ</div>
+          <div className={`${textStyle}`}>พบอุปกรณ์</div>
         </>
       );
 
@@ -46,7 +46,7 @@ const statusIcon = (status: string) => {
           <div className={`${boxStyle} border-orange-500`}>
             <FontAwesomeIcon className="h-24 text-orange-500" icon={faCircleExclamation} />
           </div>
-          <div className={`${textStyle}`}>ติดตั้งไม่สำเร็จ</div>
+          <div className={`${textStyle}`}>ไม่พบอุปกรณ์</div>
         </>
       );
     default:
