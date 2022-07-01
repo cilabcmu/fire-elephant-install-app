@@ -13,7 +13,7 @@ const Status = () => {
       >
         <div className={flag ? "text-9xl" : `text-9xl text-blue-500`}>?</div>
       </div>
-      <div className={`flex justify-center items-center mt-5 text-3xl font-medium`}>Please fill device id</div>
+      <div className={`flex justify-center items-center mt-5 text-3xl font-medium`}>กรุณากรอกไอดีอุปกรณ์</div>
     </div>
   );
 };

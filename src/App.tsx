@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+// import "./App.css";
 import Form from "./components/form";
 import Menu from "./components/menu";
 import Status from "./components/status";

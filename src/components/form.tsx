@@ -12,7 +12,7 @@ const Form = () => {
             className={`appearance-none h-12 block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white`}
             id="id"
             type="number"
-            placeholder="fill the device id"
+            placeholder="กรอกไอดีอุปกรณ์"
           />
         </div>
         <div className="flex flex-wrap ">
@@ -24,18 +24,18 @@ const Form = () => {
               className="appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white"
               id="lat"
               type="number"
-              placeholder="latitude"
+              placeholder="ลองติจูด"
             />
           </div>
           <div className="w-2/4  md:w-1/2 px-3">
             <label className="font-prompt block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="long">
-              ลองติจูด
+              longitude
             </label>
             <input
               className="appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white "
               id="long"
               type="number"
-              placeholder="longitude"
+              placeholder="ละจิจูด"
             />
           </div>
         </div>
