@@ -41,7 +41,7 @@ const Form = () => {
         </div>
       </form>
 
-      <button className={`font-prompt bg-blue-500 hover:bg-blue-700 w-44 text-white py-2 px-4 rounded-lg`} type="button">
+      <button className={`bg-blue-500 hover:bg-blue-700 w-44 text-white py-2 px-4 rounded-lg`} type="button">
         ตรวจสอบ
       </button>
     </div>

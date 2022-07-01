@@ -6,7 +6,7 @@ import Status from "./components/status";
 
 function App() {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-screen ">
+    <div className="font-prompt flex flex-col justify-center items-center w-full h-screen ">
       <Menu/>
       <Status />
       <Form />
