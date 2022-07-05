@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { ChangeEvent, ChangeEventHandler, FC, useState } from "react";
+import { useStatusContext } from "../App";
+import { FormType, useForm } from "../hooks/useForm";
 import { COLOR } from "../public/color";
-import { STATUS } from "../public/type";
+import { STATUS, StatusContextType } from "../public/type";
 
 interface FormProps {
-  status: string;
+  // status: string;
 }
 
 const buttonStatus: (status: string) => JSX.Element = (status: string) => {
@@ -42,7 +44,17 @@ const buttonStatus: (status: string) => JSX.Element = (status: string) => {
   }
 };
 
-const Form: FC<FormProps> = ({ status }) => {
+const initForm: FormType = {
+  id: "",
+  lat: "",
+  long: "",
+};
+
+const Form: FC<FormProps> = () => {
+  const { status, setStatus } = useStatusContext() as StatusContextType;
+
+  const [form, onChangeForm, onClear] = useForm(initForm);
+
   return (
     <div className="flex flex-col justify-center items-center w-9/12 ">
       <form className="w-full mb-3">
@@ -54,7 +66,10 @@ const Form: FC<FormProps> = ({ status }) => {
             className={`appearance-none h-12 block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white`}
             id="id"
             type="number"
+            name="id"
             placeholder="กรอกไอดีอุปกรณ์"
+            value={form?.id}
+            onChange={onChangeForm}
           />
         </div>
         <div className="flex flex-wrap ">
@@ -65,8 +80,11 @@ const Form: FC<FormProps> = ({ status }) => {
             <input
               className="appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white"
               id="lat"
+              name="lat"
               type="number"
-              placeholder="ลองติจูด"
+              placeholder="ละจิจูด"
+              value={form?.lat}
+              onChange={onChangeForm}
             />
           </div>
           <div className="w-2/4  md:w-1/2 px-3">
@@ -76,8 +94,11 @@ const Form: FC<FormProps> = ({ status }) => {
             <input
               className="appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white "
               id="long"
+              name="long"
               type="number"
-              placeholder="ละจิจูด"
+              placeholder="ลองติจูด"
+              value={form?.long}
+              onChange={onChangeForm}
             />
           </div>
         </div>

@@ -1,11 +1,12 @@
 import { COLOR } from "../public/color";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch, faQuestion, faLocationDot, faXmark, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { STATUS } from "../public/type";
+import { STATUS, StatusContextType } from "../public/type";
 import { FC } from "react";
+import { useStatusContext } from "../App";
 
-interface StatusProps{
-  status: string;
+interface StatusProps {
+  // status: string;
 }
 
 const statusIcon = (status: string) => {
@@ -61,8 +62,9 @@ const statusIcon = (status: string) => {
   }
 };
 
-const Status: FC<StatusProps> = ({status}) => {
-  // const status: string = "found";
+const Status: FC<StatusProps> = () => {
+  const { status } = useStatusContext() as StatusContextType;
+
   return <div className="flex flex-col justify-center items-center w-full p-5">{statusIcon(status)}</div>;
 };
 
