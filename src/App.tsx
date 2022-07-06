@@ -12,7 +12,7 @@ function App() {
   const [status, setStatus] = useStatus(STATUS.waitID);
   return (
     <StatusContext.Provider value={{ status, setStatus }}>
-      <div className="font-prompt flex flex-col justify-center items-center w-full h-screen ">
+      <div className="font-prompt flex flex-col justify-top items-center w-full h-screen ">
         <Menu />
         <Status />
         <Form />

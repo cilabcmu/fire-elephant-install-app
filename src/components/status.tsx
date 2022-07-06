@@ -65,7 +65,7 @@ const statusIcon = (status: string) => {
 const Status: FC<StatusProps> = () => {
   const { status } = useStatusContext() as StatusContextType;
 
-  return <div className="flex flex-col justify-center items-center w-full p-5">{statusIcon(status)}</div>;
+  return <div className="flex flex-col justify-center items-center w-full p-5 ">{statusIcon(status)}</div>;
 };
 
 export default Status;
