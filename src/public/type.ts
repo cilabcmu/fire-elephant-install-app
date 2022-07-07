@@ -10,4 +10,6 @@ export { STATUS };
 export interface StatusContextType {
   status: STATUS | string;
   setStatus: (value: STATUS) => void;
+  isOpenDrawer: boolean;
+  setOpenDrawer: (value: boolean) => void;
 }

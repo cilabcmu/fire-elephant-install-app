@@ -1,6 +1,5 @@
-import { COLOR } from "../public/color";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faQuestion, faLocationDot, faXmark, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faCircleNotch, faMicrochip, faLocationDot, faXmark, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { STATUS, StatusContextType } from "../public/type";
 import { FC } from "react";
 import { useStatusContext } from "../App";
@@ -26,7 +25,7 @@ const statusIcon = (status: string) => {
       return (
         <>
           <div className={`${boxStyle} border-blue-500`}>
-            <FontAwesomeIcon className="h-24 text-blue-500" icon={faQuestion} />
+            <FontAwesomeIcon className="h-24 text-blue-500" icon={faMicrochip} />
           </div>
           <div className={`${textStyle}`}>กรุณากรอกไอดีอุปกรณ์</div>
         </>

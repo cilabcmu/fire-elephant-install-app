@@ -1,7 +1,6 @@
-import { ChangeEvent, ChangeEventHandler, FC, useState } from "react";
+import { FC } from "react";
 import { useStatusContext } from "../App";
 import { FormType, useForm } from "../hooks/useForm";
-import { COLOR } from "../public/color";
 import { STATUS, StatusContextType } from "../public/type";
 
 interface FormProps {
