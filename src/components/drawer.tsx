@@ -28,7 +28,7 @@ const Drawer: FC<DrawerProps> = () => {
         <article className="relative max-w-lg pb-10 flex flex-col space-y-4 overflow-y-scroll h-full">
           <header className="p-4 font-bold text-lg">ติดต่อ</header>
           {contact.map(({ phoneNumber, name }, id) => (
-            <Card phoneNumber={phoneNumber} name={name} />
+            <Card key={id} phoneNumber={phoneNumber} name={name} />
           ))}
         </article>
       </section>
