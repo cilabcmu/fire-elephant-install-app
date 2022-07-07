@@ -49,10 +49,30 @@ const initForm: FormType = {
   long: "",
 };
 
+
 const Form: FC<FormProps> = () => {
   const { status, setStatus } = useStatusContext() as StatusContextType;
 
-  const [form, onChangeForm, onClear] = useForm(initForm);
+  const [form, onChangeForm, setForm, onClear] = useForm(initForm);
+
+  if (!form?.lat && !form?.long) {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const { latitude, longitude } = coords;
+        const lat: string = latitude.toFixed(6).toString();
+        const long: string = longitude.toFixed(6).toString();
+        if (latitude && longitude) {
+          setForm({ ...form, lat: lat, long: long });
+        }
+      },
+      (err) => console.log("The location could not be loaded because ", err.message),
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      }
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center items-center w-9/12 ">

@@ -15,5 +15,5 @@ export const useForm = (initValue: FormType) => {
 
   const onClear = () => setForm(initValue);
 
-  return [form, onChangeForm, onClear] as const;
+  return [form, onChangeForm, setForm,onClear] as const;
 };
