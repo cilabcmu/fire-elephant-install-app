@@ -1,7 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useStatusContext } from "../App";
 import { FormType, useForm } from "../hooks/useForm";
 import { STATUS, StatusContextType } from "../public/type";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 interface FormProps {
   // status: string;
@@ -43,19 +45,42 @@ const buttonStatus: (status: string) => JSX.Element = (status: string) => {
   }
 };
 
+const GetGPSText: FC = () => {
+  return (
+    <div className="flex flex-row text-neutral-400 text-sm">
+      <div className="pt-2 pr-1">
+        <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
+      </div>
+      <div className="pt-2">กำลังตรวจสอบ GPS</div>
+    </div>
+  );
+};
+
+interface ClearButton {
+  onClick?: () => void;
+}
+const ClearButton: FC<ClearButton> = ({ onClick }) => {
+  return (
+    <div className="flex flex-row text-neutral-400 text-md" onClick={onClick}>
+      <p className="pt-2 underline underline-offset-4">ล้างข้อมูล</p>
+    </div>
+  );
+};
+
 const initForm: FormType = {
   id: "",
   lat: "",
   long: "",
 };
 
-
 const Form: FC<FormProps> = () => {
   const { status, setStatus } = useStatusContext() as StatusContextType;
 
-  const [form, onChangeForm, setForm, onClear] = useForm(initForm);
+  const [form, onChangeForm, setForm, onClearForm] = useForm(initForm);
 
-  if (!form?.lat && !form?.long) {
+  const [isGetGeolocation, setIsGetGeolocation] = useState(true);
+
+  if (!form?.lat && !form?.long && isGetGeolocation) {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         const { latitude, longitude } = coords;
@@ -64,14 +89,23 @@ const Form: FC<FormProps> = () => {
         if (latitude && longitude) {
           setForm({ ...form, lat: lat, long: long });
         }
+        setIsGetGeolocation(false);
       },
-      (err) => console.log("The location could not be loaded because ", err.message),
+      (err) => {
+        console.log(err.message);
+        setIsGetGeolocation(false);
+      },
       {
         enableHighAccuracy: true,
         timeout: 5000,
         maximumAge: 0,
       }
     );
+  }
+
+  const onClear = () => {
+    setStatus(STATUS.waitID)
+    onClearForm()
   }
 
   return (
@@ -123,6 +157,8 @@ const Form: FC<FormProps> = () => {
         </div>
       </form>
       {buttonStatus(status)}
+      {isGetGeolocation && <GetGPSText />}
+      {(status === STATUS.notFound || status === STATUS.noDevice) && <ClearButton onClick={onClear} />}
     </div>
   );
 };

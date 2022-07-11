@@ -3,6 +3,7 @@ const enum STATUS {
   loading = "loading",
   found = "found",
   notFound = "notFound",
+  noDevice = "noDevice"
 }
 
 export { STATUS };

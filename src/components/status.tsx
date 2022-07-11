@@ -49,6 +49,7 @@ const statusIcon = (status: string) => {
           <div className={`${textStyle}`}>ไม่พบอุปกรณ์</div>
         </>
       );
+    case STATUS.noDevice:
     default:
       return (
         <>
