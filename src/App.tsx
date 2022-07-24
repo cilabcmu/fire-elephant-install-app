@@ -1,8 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Drawer from "./components/drawer";
 import Form from "./components/form";
 import Menu from "./components/menu/menu";
 import Status from "./components/status";
+import { useAutoGps } from "./hooks/useAutoGPS";
 import { useDrawer } from "./hooks/useDrawer";
 import { useStatus } from "./hooks/useStatus";
 import { STATUS, StatusContextType } from "./public/type";
@@ -12,15 +13,17 @@ const useStatusContext = () => useContext(StatusContext);
 
 function App() {
   const [isOpenDrawer, setOpenDrawer] = useDrawer();
-
   const [status, setStatus] = useStatus(STATUS.waitID);
+
+  const [isAutoGPS, setAutoGPS] = useAutoGps(true);
+
   return (
-    <StatusContext.Provider value={{ status, setStatus, isOpenDrawer, setOpenDrawer }}>
+    <StatusContext.Provider value={{ status, setStatus, isOpenDrawer, setOpenDrawer, isAutoGPS, setAutoGPS }}>
       <div className="font-prompt flex flex-col justify-top items-center w-full h-screen ">
         <Menu />
         <Status />
         <Form />
-        <Drawer/>
+        <Drawer />
       </div>
     </StatusContext.Provider>
   );
