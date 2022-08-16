@@ -94,15 +94,15 @@ const initForm: FormType = {
 };
 
 const Form: FC<FormProps> = () => {
-  const { status, setStatus } = useStatusContext() as StatusContextType;
+  const { status, setStatus, isAutoGPS } = useStatusContext() as StatusContextType;
 
   const [form, onChangeForm, setForm, onClearForm] = useForm(initForm);
 
   const isEmpty = form && Object.values(form).some((x) => !x);
 
-  const [isProcessing, setIsProcessing] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(isAutoGPS);
 
-  if (!form?.lat && !form?.long && isProcessing) {
+  if (isAutoGPS && (!form?.lat && !form?.long && isProcessing)) {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         const { latitude, longitude } = coords;

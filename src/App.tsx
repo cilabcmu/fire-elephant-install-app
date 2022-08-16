@@ -15,7 +15,7 @@ function App() {
   const [isOpenDrawer, setOpenDrawer] = useDrawer();
   const [status, setStatus] = useStatus(STATUS.waitID);
 
-  const [isAutoGPS, setAutoGPS] = useAutoGps(true);
+  const [isAutoGPS, setAutoGPS] = useAutoGps();
 
   return (
     <StatusContext.Provider value={{ status, setStatus, isOpenDrawer, setOpenDrawer, isAutoGPS, setAutoGPS }}>
