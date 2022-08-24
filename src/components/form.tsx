@@ -56,6 +56,7 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
 enum ProcessTextType {
   gps = "กำลังตรวจสอบ GPS",
   requiredField = "* กรุณากรอกให้ครบ",
+  locationOutArea = "* ตำแหน่งอุปกรณ์เกินขอบเขต",
 }
 
 const ProcessText: FC<ProcessTextProps> = ({ text }) => {
@@ -134,7 +135,18 @@ const Form: FC = () => {
 
   const onSubmit = async () => {
     if (!isEmpty) {
-      setStatus(STATUS.loading);
+      const centerLocation: number[] = [18.796143, 98.979263];
+      const distance: number = Math.sqrt(
+        Math.pow(parseInt(form?.lat) - centerLocation[0], 2) + Math.pow(parseInt(form?.long) - centerLocation[1], 2)
+      );
+      const maxDistance: number = 1.4;
+      if (distance >= maxDistance) {
+        setProcessText(ProcessTextType.locationOutArea);
+        setIsProcessing(true);
+        return;
+      }
+
+      // setStatus(STATUS.loading);
       await updateLocation({
         variables: {
           lat: parseInt(form?.lat),
@@ -142,12 +154,6 @@ const Form: FC = () => {
           dn_v: parseFloat(form?.id),
         },
       });
-      // const result = randomOutput();
-      // setIsProcessing(false);
-      // setStatus(STATUS.loading);
-      // await setTimeout(() => {
-      //   setStatus(result);
-      // }, 1000);
       return;
     }
     setProcessText(ProcessTextType.requiredField);
@@ -164,11 +170,11 @@ const Form: FC = () => {
       const { latlngMessage, latlngStatus, status, statusMessage }: UpdateLocationCheckSDType = data.updateLocationCheckSD;
       if (status && latlngStatus) {
         setStatus(STATUS.found);
-      }else if (!latlngStatus){
+      } else if (!latlngStatus) {
         setStatus(STATUS.noDevice); // TODO: change a new status
-      }else if (!status){
+      } else if (!status) {
         setStatus(STATUS.notFound);
-      }else{
+      } else {
         setStatus(STATUS.notFound);
       }
       setIsProcessing(false);
