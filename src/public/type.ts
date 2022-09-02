@@ -3,7 +3,7 @@ const enum STATUS {
   loading = "loading",
   found = "found",
   notFound = "notFound",
-  noDevice = "noDevice"
+  noDevice = "noDevice",
 }
 
 export { STATUS };
@@ -16,3 +16,10 @@ export interface StatusContextType {
   isAutoGPS: boolean;
   setAutoGPS: () => void;
 }
+
+export type UpdateLocationCheckSDType = {
+  latlngMessage: string;
+  latlngStatus: string;
+  status: string;
+  statusMessage: string;
+};

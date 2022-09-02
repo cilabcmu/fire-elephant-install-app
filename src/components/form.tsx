@@ -1,14 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useStatusContext } from "../App";
 import { FormType, useForm } from "../hooks/useForm";
-import { STATUS, StatusContextType } from "../public/type";
+import { STATUS, StatusContextType, UpdateLocationCheckSDType } from "../public/type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { randomOutput } from "../api/randomOutput";
-
-interface FormProps {
-  // status: string;
-}
+import { useMutation } from "@apollo/client";
+import { UPDATE_LOCATION } from "../api/mutationGQL";
 
 interface ButtonStatusProps {
   status: string;
@@ -59,6 +56,7 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
 enum ProcessTextType {
   gps = "กำลังตรวจสอบ GPS",
   requiredField = "* กรุณากรอกให้ครบ",
+  locationOutArea = "* ตำแหน่งอุปกรณ์เกินขอบเขต",
 }
 
 const ProcessText: FC<ProcessTextProps> = ({ text }) => {
@@ -93,16 +91,18 @@ const initForm: FormType = {
   long: "",
 };
 
-const Form: FC<FormProps> = () => {
+const Form: FC = () => {
+  const [updateLocation, { data, loading, error }] = useMutation(UPDATE_LOCATION);
+
   const { status, setStatus, isAutoGPS } = useStatusContext() as StatusContextType;
 
   const [form, onChangeForm, setForm, onClearForm] = useForm(initForm);
 
-  const isEmpty = form && Object.values(form).some((x) => !x);
+  const isEmpty: boolean = Object.values(form).some((x) => !x);
 
   const [isProcessing, setIsProcessing] = useState(isAutoGPS);
 
-  if (isAutoGPS && (!form?.lat && !form?.long && isProcessing)) {
+  if (isAutoGPS && !form?.lat && !form?.long && isProcessing) {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         const { latitude, longitude } = coords;
@@ -130,22 +130,56 @@ const Form: FC<FormProps> = () => {
     setStatus(STATUS.waitID);
     onClearForm();
     setProcessText(ProcessTextType.gps);
-    setIsProcessing(true);
+    isAutoGPS ? setIsProcessing(true) : setIsProcessing(false);
   };
 
-  const onCheckDevice = async () => {
+  const onSubmit = async () => {
     if (!isEmpty) {
-      const result = randomOutput();
-      setIsProcessing(false);
-      setStatus(STATUS.loading);
-      await setTimeout(() => {
-        setStatus(result);
-      }, 1000);
+      const centerLocation: number[] = [18.796143, 98.979263];
+      const distance: number = Math.sqrt(
+        Math.pow(parseInt(form?.lat) - centerLocation[0], 2) + Math.pow(parseInt(form?.long) - centerLocation[1], 2)
+      );
+      const maxDistance: number = 1.4;
+      if (distance >= maxDistance) {
+        setProcessText(ProcessTextType.locationOutArea);
+        setIsProcessing(true);
+        return;
+      }
+
+      // setStatus(STATUS.loading);
+      await updateLocation({
+        variables: {
+          lat: parseInt(form?.lat),
+          lng: parseFloat(form?.long),
+          dn_v: parseFloat(form?.id),
+        },
+      });
       return;
     }
     setProcessText(ProcessTextType.requiredField);
     setIsProcessing(true);
   };
+
+  if (error) console.log("error:", error);
+
+  useEffect(() => {
+    if (loading) {
+      setStatus(STATUS.loading);
+    }
+    if (data) {
+      const { latlngMessage, latlngStatus, status, statusMessage }: UpdateLocationCheckSDType = data.updateLocationCheckSD;
+      if (status && latlngStatus) {
+        setStatus(STATUS.found);
+      } else if (!latlngStatus) {
+        setStatus(STATUS.noDevice); // TODO: change a new status
+      } else if (!status) {
+        setStatus(STATUS.notFound);
+      } else {
+        setStatus(STATUS.notFound);
+      }
+      setIsProcessing(false);
+    }
+  }, [loading]);
 
   return (
     <div className="flex flex-col justify-center items-center w-9/12 ">
@@ -198,7 +232,7 @@ const Form: FC<FormProps> = () => {
           </div>
         </div>
       </form>
-      {<ButtonStatus status={status} onCheckDevice={onCheckDevice} onClear={onClear} />}
+      {<ButtonStatus status={status} onCheckDevice={onSubmit} onClear={onClear} />}
       {isProcessing && <ProcessText text={processText} />}
       {(status === STATUS.notFound || status === STATUS.noDevice) && <ClearButton onClick={onClear} />}
     </div>
