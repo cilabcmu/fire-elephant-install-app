@@ -16,11 +16,5 @@ export const useAutoGps = () => {
     setAutoGPS(!isAutoGPS);
   };
 
-  // useEffect(() => {
-  //   if (autoGPS) {
-  //     setAutoGPS(autoGPS.toLowerCase() === "true");
-  //   }
-  // }, [isAutoGPS]);
-
   return [isAutoGPS, onChangeSetAutoGPS] as const;
 };
