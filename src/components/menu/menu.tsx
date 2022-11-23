@@ -23,9 +23,9 @@ const Menu = () => {
         </label>
       </div>
 
-      <div className="flex justify-center p-2 bg-gray-100 rounded-lg" onClick={() => setOpenDrawer(true)}>
+      {/* <div className="flex justify-center p-2 bg-gray-100 rounded-lg" onClick={() => setOpenDrawer(true)}>
         <FontAwesomeIcon className="h-5 w-5 text-gray-600" icon={faBars} />
-      </div>
+      </div> */}
     </div>
   );
 };
