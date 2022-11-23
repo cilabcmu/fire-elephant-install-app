@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "netl": "netlify"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -15,7 +14,6 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@types/node": "^18.7.9",
     "autoprefixer": "^10.4.7",
-    "netlify-cli": "^10.17.6",
     "graphql": "^16.6.0",
     "postcss": "^8.4.14",
     "react": "^18.0.0",
