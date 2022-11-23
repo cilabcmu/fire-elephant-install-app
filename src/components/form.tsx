@@ -17,6 +17,37 @@ interface ProcessTextProps {
   text: string;
 }
 
+
+const coordinateToKilometers = (position_a: [number, number], position_b: [number, number]): number => {
+  // The math module contains a function
+  // named toRadians which converts from
+  // degrees to radians.
+
+  const lon1 = (position_a[0] * Math.PI) / 180;
+  const lon2 = (position_b[0] * Math.PI) / 180;
+  const lat1 = (position_a[1] * Math.PI) / 180;
+  const lat2 = (position_b[1] * Math.PI) / 180;
+
+  // Haversine formula
+  let dlon = lon2 - lon1;
+  let dlat = lat2 - lat1;
+  let a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
+
+  let c = 2 * Math.asin(Math.sqrt(a));
+
+  // Radius of earth in kilometers. Use 3956
+  // for miles
+  let r = 3956;
+
+  // calculate the result
+  return c * r;
+};
+
+const centerCoordinate: [number, number] = [18.787237, 98.986587]; // Wat Chedi Luang Chiang Mai.
+const maxCoordinate: [number, number] = [18.872823, 98.781724];
+
+const maxDistance: number = coordinateToKilometers(centerCoordinate, maxCoordinate);
+
 const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear }) => {
   const buttonStyle = "w-44 text-white py-2 px-4 rounded-lg";
   switch (status) {
@@ -135,18 +166,17 @@ const Form: FC = () => {
 
   const onSubmit = async () => {
     if (!isEmpty) {
-      const centerLocation: number[] = [18.796143, 98.979263];
-      const distance: number = Math.sqrt(
-        Math.pow(parseInt(form?.lat) - centerLocation[0], 2) + Math.pow(parseInt(form?.long) - centerLocation[1], 2)
-      );
-      const maxDistance: number = 1.4;
-      if (distance >= maxDistance) {
+
+      const distanceFromCenter: number = coordinateToKilometers([parseFloat(form?.lat), parseFloat(form?.long)], centerCoordinate);
+
+
+      if (distanceFromCenter >= maxDistance) {
         setProcessText(ProcessTextType.locationOutArea);
         setIsProcessing(true);
         return;
       }
 
-      // setStatus(STATUS.loading);
+
       await updateLocation({
         variables: {
           lat: parseInt(form?.lat),
@@ -156,6 +186,7 @@ const Form: FC = () => {
       });
       return;
     }
+
     setProcessText(ProcessTextType.requiredField);
     setIsProcessing(true);
   };
