@@ -36,7 +36,7 @@ const statusIcon = (status: string) => {
           <div className={`${boxStyle} border-green-500`}>
             <FontAwesomeIcon className="h-24 text-green-500" icon={faLocationDot} />
           </div>
-          <div className={`${textStyle}`}>พบอุปกรณ์</div>
+          <div className={`${textStyle}`}>ติดตั้งสำเร็จ</div>
         </>
       );
 
@@ -46,7 +46,7 @@ const statusIcon = (status: string) => {
           <div className={`${boxStyle} border-orange-500`}>
             <FontAwesomeIcon className="h-24 text-orange-500" icon={faCircleExclamation} />
           </div>
-          <div className={`${textStyle}`}>ไม่พบอุปกรณ์</div>
+          <div className={`${textStyle}`}>ติดตั้งไม่สำเร็จ</div>
         </>
       );
     case STATUS.noDevice:
@@ -56,7 +56,7 @@ const statusIcon = (status: string) => {
           <div className={`${boxStyle} border-red-500`}>
             <FontAwesomeIcon className="h-24 text-red-500" icon={faXmark} />
           </div>
-          <div className={`${textStyle}`}>ไม่พบอุปกรณ์ที่ค้นหา</div>
+          <div className={`${textStyle}`}>ไม่พบอุปกรณ์ในระบบ</div>
         </>
       );
   }
