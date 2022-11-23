@@ -131,6 +131,8 @@ const Form: FC = () => {
 
   const isEmpty: boolean = Object.values(form).some((x) => !x);
 
+  const [processText, setProcessText] = useState(ProcessTextType.gps);
+
   const [isProcessing, setIsProcessing] = useState(isAutoGPS);
 
   if (isAutoGPS && !form?.lat && !form?.long && isProcessing) {
@@ -156,7 +158,6 @@ const Form: FC = () => {
     );
   }
 
-  const [processText, setProcessText] = useState(ProcessTextType.gps);
   const onClear = () => {
     setStatus(STATUS.waitID);
     onClearForm();
@@ -228,6 +229,7 @@ const Form: FC = () => {
             placeholder="กรอกไอดีอุปกรณ์"
             value={form?.id}
             onChange={onChangeForm}
+            disabled={status == STATUS.found}
           />
         </div>
         <div className="flex flex-wrap ">
@@ -243,7 +245,7 @@ const Form: FC = () => {
               placeholder="ละจิจูด"
               value={form?.lat}
               onChange={onChangeForm}
-              disabled={isProcessing && processText === ProcessTextType.gps}
+              disabled={isProcessing && processText === ProcessTextType.gps || status == STATUS.found}
             />
           </div>
           <div className="w-2/4  md:w-1/2 px-3">
@@ -258,7 +260,7 @@ const Form: FC = () => {
               placeholder="ลองติจูด"
               value={form?.long}
               onChange={onChangeForm}
-              disabled={isProcessing && processText === ProcessTextType.gps}
+              disabled={isProcessing && processText === ProcessTextType.gps || status == STATUS.found}
             />
           </div>
         </div>
