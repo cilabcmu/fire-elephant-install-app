@@ -5,7 +5,7 @@ import { FC } from "react";
 import { useStatusContext } from "../App";
 
 interface StatusProps {
-  // status: string;
+
 }
 
 const statusIcon = (status: string) => {

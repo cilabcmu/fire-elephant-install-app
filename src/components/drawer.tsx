@@ -5,9 +5,7 @@ import Card from "./menu/card";
 import { contact } from "./menu/contact";
 
 interface DrawerProps {
-  //   children: JSX.IntrinsicElements;
-  // isOpen: boolean;
-  // setIsOpen: (value?: boolean) => void;
+
 }
 const Drawer: FC<DrawerProps> = () => {
   const { isOpenDrawer, setOpenDrawer } = useStatusContext() as StatusContextType;
