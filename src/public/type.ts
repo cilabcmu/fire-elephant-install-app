@@ -6,6 +6,8 @@ const enum STATUS {
   noDevice = "noDevice",
 }
 
+export type SYSTEM_MODE_TYPE = "record" | "check";
+
 export { STATUS };
 
 export interface StatusContextType {
@@ -15,11 +17,13 @@ export interface StatusContextType {
   setOpenDrawer: (value: boolean) => void;
   isAutoGPS: boolean;
   setAutoGPS: () => void;
+  systemMode: SYSTEM_MODE_TYPE;
+  setSystemMode: (value: SYSTEM_MODE_TYPE) => void;
 }
 
 export type UpdateLocationCheckSDType = {
   latlngMessage: string;
-  latlngStatus: string;
-  status: string;
+  latlngStatus: boolean;
+  status: boolean;
   statusMessage: string;
 };

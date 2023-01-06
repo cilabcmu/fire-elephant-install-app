@@ -207,6 +207,8 @@ const Form: FC = () => {
       } else if (!status) {
         setStatus(STATUS.notFound);
       } else {
+        console.log('latlngMessage: ',latlngMessage)
+        console.log('statusMessage: ',statusMessage)
         setStatus(STATUS.notFound);
       }
       setIsProcessing(false);
