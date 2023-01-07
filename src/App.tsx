@@ -23,7 +23,6 @@ function App() {
         <Menu />
         <Status />
         <Form />
-        <Drawer />
       </div>
     </StatusContext.Provider>
   );
