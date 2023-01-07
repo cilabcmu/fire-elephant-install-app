@@ -22,7 +22,7 @@ const ToggleBtn: FC<ToggleBtnProps> = ({ systemMode, onChangeMode }) => {
   return (
     <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
       <button
-        className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-white-400 focus:text-white-400 rounded-l-full px-4 py-2 ${
+        className={`inline-flex items-center transition-colors duration-200 ease-in focus:outline-none hover:text-white-400 focus:text-white-400 rounded-l-full px-4 py-2 ${
           isRecordMode ? activeClass : ""
         }`}
         id="recording"
@@ -31,7 +31,7 @@ const ToggleBtn: FC<ToggleBtnProps> = ({ systemMode, onChangeMode }) => {
         <span>บันทึก</span>
       </button>
       <button
-        className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-white-400 focus:text-white-400 rounded-r-full px-4 py-2 ${
+        className={`inline-flex items-center transition-colors duration-200 ease-in focus:outline-none hover:text-white-400 focus:text-white-400 rounded-r-full px-4 py-2 ${
           isCheckingMode ? activeClass : ""
         }`}
         id="checking"

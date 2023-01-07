@@ -1,16 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faMicrochip, faLocationDot, faXmark, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { STATUS, StatusContextType } from "../public/type";
+import { faCircleNotch, faMicrochip, faLocationDot, faXmark, faCircleExclamation, faFingerprint } from "@fortawesome/free-solid-svg-icons";
+import { STATUS, StatusContextType, SYSTEM_MODE_TYPE } from "../public/type";
 import { FC } from "react";
 import { useStatusContext } from "../App";
 
-interface StatusProps {
+interface StatusProps {}
 
-}
-
-const statusIcon = (status: string) => {
+const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
   const boxStyle = "flex justify-center items-center box-content h-32 w-32 p-4  border border-8 rounded-3xl";
   const textStyle = "flex justify-center items-center mt-5 text-2xl font-medium`";
+  const isRecordMode: boolean = systemMode === "record";
   switch (status) {
     case STATUS.loading:
       return (
@@ -25,7 +24,7 @@ const statusIcon = (status: string) => {
       return (
         <>
           <div className={`${boxStyle} border-blue-500`}>
-            <FontAwesomeIcon className="h-24 text-blue-500" icon={faMicrochip} />
+            <FontAwesomeIcon className="h-24 text-blue-500 transition-colors duration-200 ease-in" icon={isRecordMode ? faMicrochip : faFingerprint} />
           </div>
           <div className={`${textStyle}`}>กรุณากรอกไอดีอุปกรณ์</div>
         </>
@@ -44,7 +43,7 @@ const statusIcon = (status: string) => {
       return (
         <>
           <div className={`${boxStyle} border-orange-500`}>
-            <FontAwesomeIcon className="h-24 text-orange-500" icon={faCircleExclamation} />
+            <FontAwesomeIcon className="h-24 text-orange-500 " icon={faCircleExclamation} />
           </div>
           <div className={`${textStyle}`}>ติดตั้งไม่สำเร็จ</div>
         </>
@@ -63,9 +62,9 @@ const statusIcon = (status: string) => {
 };
 
 const Status: FC<StatusProps> = () => {
-  const { status } = useStatusContext() as StatusContextType;
+  const { status, systemMode } = useStatusContext() as StatusContextType;
 
-  return <div className="flex flex-col justify-center items-center w-full p-5 ">{statusIcon(status)}</div>;
+  return <div className="flex flex-col justify-center items-center w-full p-5 ">{statusIcon(status, systemMode)}</div>;
 };
 
 export default Status;

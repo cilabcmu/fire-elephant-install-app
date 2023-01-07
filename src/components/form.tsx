@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useStatusContext } from "../App";
 import { FormType, useForm } from "../hooks/useForm";
 import { STATUS, StatusContextType, UpdateLocationCheckSDType } from "../public/type";
@@ -13,10 +13,32 @@ interface ButtonStatusProps {
   onClear?: () => void;
 }
 
+interface ClearButtonProps {
+  onClick?: () => void;
+}
+
+interface InputIDProps {
+  deviceID: string | undefined;
+  onChangeForm: (event: ChangeEvent<HTMLInputElement>) => void;
+  status: string;
+}
+
+interface InputCoordinateProps {
+  labelId: string;
+  labelText: string;
+  coordinate: string | undefined;
+  onChangeCoordinate: (event: ChangeEvent<HTMLInputElement>) => void;
+  isDisable: boolean;
+}
 interface ProcessTextProps {
   text: string;
 }
 
+enum ProcessTextType {
+  gps = "กำลังตรวจสอบ GPS",
+  requiredField = "* กรุณากรอกให้ครบ",
+  locationOutArea = "* ตำแหน่งอุปกรณ์เกินขอบเขต",
+}
 
 const coordinateToKilometers = (position_a: [number, number], position_b: [number, number]): number => {
   // The math module contains a function
@@ -54,13 +76,13 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
     case STATUS.waitID:
       return (
         <button className={`${buttonStyle} bg-blue-500 hover:bg-blue-600`} type="button" onClick={onCheckDevice}>
-          ตรวจสอบ
+          ดำเนินการ
         </button>
       );
     case STATUS.loading:
       return (
         <button className={`${buttonStyle} bg-blue-500 disabled:bg-blue-300  animate-bounce`} type="button" disabled={true}>
-          กำลังตรวจสอบ
+          กำลังดำเนินการ
         </button>
       );
     case STATUS.found:
@@ -72,23 +94,58 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
     case STATUS.notFound:
       return (
         <button className={`${buttonStyle} bg-orange-500 hover:bg-orange-600`} type="button" onClick={onCheckDevice}>
-          ตรวจสอบอีกครั้ง
+          ดำเนินการอีกครั้ง
         </button>
       );
     default:
       return (
         <button className={`${buttonStyle} bg-red-500 hover:bg-red-600`} type="button" onClick={onCheckDevice}>
-          ตรวจสอบอีกครั้ง
+          ดำเนินการอีกครั้ง
         </button>
       );
   }
 };
 
-enum ProcessTextType {
-  gps = "กำลังตรวจสอบ GPS",
-  requiredField = "* กรุณากรอกให้ครบ",
-  locationOutArea = "* ตำแหน่งอุปกรณ์เกินขอบเขต",
-}
+const InputID: FC<InputIDProps> = ({ deviceID, onChangeForm, status }) => {
+  return (
+    <>
+      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 inline-block" htmlFor="id">
+        device id
+      </label>
+
+      <input
+        className={`appearance-none h-12 block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white disabled:bg-gray-200`}
+        id="id"
+        type="number"
+        name="id"
+        placeholder="กรอกไอดีอุปกรณ์"
+        value={deviceID}
+        onChange={onChangeForm}
+        disabled={status == STATUS.found}
+      />
+    </>
+  );
+};
+
+const InputCoordinate: FC<InputCoordinateProps> = ({ labelId, labelText, coordinate, onChangeCoordinate, isDisable }) => {
+  return (
+    <>
+      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor={labelId}>
+        {labelText}
+      </label>
+      <input
+        className="disabled:bg-gray-200 appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white"
+        id={labelId}
+        name={labelId}
+        type="number"
+        placeholder="ละจิจูด"
+        value={coordinate}
+        onChange={onChangeCoordinate}
+        disabled={isDisable}
+      />
+    </>
+  );
+};
 
 const ProcessText: FC<ProcessTextProps> = ({ text }) => {
   const isGpS: boolean = text === ProcessTextType.gps;
@@ -105,10 +162,7 @@ const ProcessText: FC<ProcessTextProps> = ({ text }) => {
   );
 };
 
-interface ClearButton {
-  onClick?: () => void;
-}
-const ClearButton: FC<ClearButton> = ({ onClick }) => {
+const ClearButton: FC<ClearButtonProps> = ({ onClick }) => {
   return (
     <div className="flex flex-row text-neutral-400 text-md" onClick={onClick}>
       <p className="pt-2 underline underline-offset-4">ล้างข้อมูล</p>
@@ -125,15 +179,19 @@ const initForm: FormType = {
 const Form: FC = () => {
   const [updateLocation, { data, loading, error }] = useMutation(UPDATE_LOCATION);
 
-  const { status, setStatus, isAutoGPS } = useStatusContext() as StatusContextType;
+  const { status, setStatus, isAutoGPS, systemMode } = useStatusContext() as StatusContextType;
 
   const [form, onChangeForm, setForm, onClearForm] = useForm(initForm);
-
-  const isEmpty: boolean = Object.values(form).some((x) => !x);
 
   const [processText, setProcessText] = useState(ProcessTextType.gps);
 
   const [isProcessing, setIsProcessing] = useState(isAutoGPS);
+
+  const isEmpty: boolean = Object.values(form).some((x) => !x);
+
+  const disableLatLong: boolean = (isProcessing && processText === ProcessTextType.gps) || status == STATUS.found;
+
+  const isRecordMode: boolean = systemMode === 'record'
 
   if (isAutoGPS && !form?.lat && !form?.long && isProcessing) {
     navigator.geolocation.getCurrentPosition(
@@ -158,25 +216,22 @@ const Form: FC = () => {
     );
   }
 
-  const onClear = () => {
+  const onClear: () => void = () => {
     setStatus(STATUS.waitID);
     onClearForm();
     setProcessText(ProcessTextType.gps);
     isAutoGPS ? setIsProcessing(true) : setIsProcessing(false);
   };
 
-  const onSubmit = async () => {
+  const onRecord: () => Promise<void> = async () => {
     if (!isEmpty) {
-
       const distanceFromCenter: number = coordinateToKilometers([parseFloat(form?.lat), parseFloat(form?.long)], centerCoordinate);
-
 
       if (distanceFromCenter >= maxDistance) {
         setProcessText(ProcessTextType.locationOutArea);
         setIsProcessing(true);
         return;
       }
-
 
       await updateLocation({
         variables: {
@@ -188,6 +243,15 @@ const Form: FC = () => {
       return;
     }
 
+    setProcessText(ProcessTextType.requiredField);
+    setIsProcessing(true);
+  };
+
+  const onCheck: () => Promise<void> = async () => {
+    if (!isEmpty) {
+      // TODO: add check device API
+      return;
+    }
     setProcessText(ProcessTextType.requiredField);
     setIsProcessing(true);
   };
@@ -207,8 +271,8 @@ const Form: FC = () => {
       } else if (!status) {
         setStatus(STATUS.notFound);
       } else {
-        console.log('latlngMessage: ',latlngMessage)
-        console.log('statusMessage: ',statusMessage)
+        console.log("latlngMessage: ", latlngMessage);
+        console.log("statusMessage: ", statusMessage);
         setStatus(STATUS.notFound);
       }
       setIsProcessing(false);
@@ -219,57 +283,36 @@ const Form: FC = () => {
     <div className="flex flex-col justify-center items-center w-9/12 ">
       <form className="w-full mb-3">
         <div className="w-full px-3">
-          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 inline-block" htmlFor="id">
-            device id
-          </label>
-
-          <input
-            className={`appearance-none h-12 block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white disabled:bg-gray-200`}
-            id="id"
-            type="number"
-            name="id"
-            placeholder="กรอกไอดีอุปกรณ์"
-            value={form?.id}
-            onChange={onChangeForm}
-            disabled={status == STATUS.found}
-          />
+          <InputID deviceID={form.id} onChangeForm={onChangeForm} status={status} />
         </div>
-        <div className="flex flex-wrap ">
-          <div className="w-2/4 px-3 ">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="lat">
-              latitude
-            </label>
-            <input
-              className="disabled:bg-gray-200 appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white"
-              id="lat"
-              name="lat"
-              type="number"
-              placeholder="ละจิจูด"
-              value={form?.lat}
-              onChange={onChangeForm}
-              disabled={isProcessing && processText === ProcessTextType.gps || status == STATUS.found}
-            />
+        {isRecordMode ? (
+          <div className="flex flex-wrap ">
+            <div className="w-2/4 px-3 ">
+              <InputCoordinate
+                labelId="lat"
+                labelText="latitude"
+                coordinate={form.lat}
+                onChangeCoordinate={onChangeForm}
+                isDisable={disableLatLong}
+              />
+            </div>
+            <div className="w-2/4  md:w-1/2 px-3">
+              <InputCoordinate
+                labelId="long"
+                labelText="longitude"
+                coordinate={form.long}
+                onChangeCoordinate={onChangeForm}
+                isDisable={disableLatLong}
+              />
+            </div>
           </div>
-          <div className="w-2/4  md:w-1/2 px-3">
-            <label className="font-prompt block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="long">
-              longitude
-            </label>
-            <input
-              className="disabled:bg-gray-200 appearance-none block w-full bg-white text-gray-700 text-center border border-neutral-400 rounded-lg py-3 px-4 mb-3 leading-tight placeholder-neutral-400 focus:outline-none focus:placeholder-white "
-              id="long"
-              name="long"
-              type="number"
-              placeholder="ลองติจูด"
-              value={form?.long}
-              onChange={onChangeForm}
-              disabled={isProcessing && processText === ProcessTextType.gps || status == STATUS.found}
-            />
-          </div>
-        </div>
+        ) : (
+          <></>
+        )}
       </form>
-      {<ButtonStatus status={status} onCheckDevice={onSubmit} onClear={onClear} />}
-      {isProcessing && <ProcessText text={processText} />}
-      {(status === STATUS.notFound || status === STATUS.noDevice) && <ClearButton onClick={onClear} />}
+      {<ButtonStatus status={status} onCheckDevice={systemMode === "record" ? onRecord : onCheck} onClear={onClear} />}
+      {isProcessing && <ProcessText text={processText} /> && isRecordMode}
+      <ClearButton onClick={onClear} />
     </div>
   );
 };
