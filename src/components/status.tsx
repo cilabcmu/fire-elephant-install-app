@@ -24,7 +24,10 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
       return (
         <>
           <div className={`${boxStyle} border-blue-500`}>
-            <FontAwesomeIcon className="h-24 text-blue-500 transition-colors duration-200 ease-in" icon={isRecordMode ? faMicrochip : faFingerprint} />
+            <FontAwesomeIcon
+              className="h-24 text-blue-500 transition-colors duration-200 ease-in"
+              icon={isRecordMode ? faMicrochip : faFingerprint}
+            />
           </div>
           <div className={`${textStyle}`}>กรุณากรอกไอดีอุปกรณ์</div>
         </>
@@ -35,7 +38,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
           <div className={`${boxStyle} border-green-500`}>
             <FontAwesomeIcon className="h-24 text-green-500" icon={faLocationDot} />
           </div>
-          <div className={`${textStyle}`}>ติดตั้งสำเร็จ</div>
+          <div className={`${textStyle}`}>{isRecordMode ? "ติดตั้งสำเร็จ" : "ติดตั้งแล้ว"}</div>
         </>
       );
 
@@ -45,7 +48,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
           <div className={`${boxStyle} border-orange-500`}>
             <FontAwesomeIcon className="h-24 text-orange-500 " icon={faCircleExclamation} />
           </div>
-          <div className={`${textStyle}`}>ติดตั้งไม่สำเร็จ</div>
+          <div className={`${textStyle}`}>{isRecordMode ? "ติดตั้งไม่สำเร็จ" : "ยังไม่ถูกติดตั้ง"}</div>
         </>
       );
     case STATUS.noDevice:
