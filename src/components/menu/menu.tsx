@@ -17,7 +17,7 @@ const ToggleBtn: FC<ToggleBtnProps> = ({ systemMode, onChangeMode }) => {
 
   const isCheckingMode: boolean = !isRecordMode;
 
-  const activeClass: string = `${isRecordMode ? 'bg-red-500' : 'bg-green-500'} rounded-full text-white`
+  const activeClass: string = `${isRecordMode ? 'bg-yellow-500' : 'bg-green-500'} rounded-full text-white`
 
   return (
     <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">

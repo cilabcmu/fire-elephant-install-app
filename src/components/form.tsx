@@ -21,6 +21,7 @@ interface InputIDProps {
   deviceID: string | undefined;
   onChangeForm: (event: ChangeEvent<HTMLInputElement>) => void;
   status: string;
+  isDisable: boolean
 }
 
 interface InputCoordinateProps {
@@ -106,7 +107,7 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
   }
 };
 
-const InputID: FC<InputIDProps> = ({ deviceID, onChangeForm, status }) => {
+const InputID: FC<InputIDProps> = ({ deviceID, onChangeForm, status, isDisable }) => {
   return (
     <>
       <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 inline-block" htmlFor="id">
@@ -121,7 +122,7 @@ const InputID: FC<InputIDProps> = ({ deviceID, onChangeForm, status }) => {
         placeholder="กรอกไอดีอุปกรณ์"
         value={deviceID}
         onChange={onChangeForm}
-        disabled={status == STATUS.found}
+        disabled={status == STATUS.found || isDisable}
       />
     </>
   );
@@ -205,7 +206,7 @@ const Form: FC = () => {
         setIsProcessing(false);
       },
       (err) => {
-        console.log(err.message);
+        console.log('fetch gps err:',err.message);
         setIsProcessing(false);
       },
       {
@@ -235,9 +236,9 @@ const Form: FC = () => {
 
       await updateLocation({
         variables: {
-          lat: parseInt(form?.lat),
+          lat: parseFloat(form?.lat),
           lng: parseFloat(form?.long),
-          dn_v: parseFloat(form?.id),
+          dn_v: parseInt(form?.id),
         },
       });
       return;
@@ -248,8 +249,16 @@ const Form: FC = () => {
   };
 
   const onCheck: () => Promise<void> = async () => {
-    if (!isEmpty) {
-      // TODO: add check device API
+    if (form.id) {
+      
+      await updateLocation({
+        variables: {
+          lat: -1,
+          lng: -1,
+          dn_v: parseInt(form?.id),
+        }
+      });
+
       return;
     }
     setProcessText(ProcessTextType.requiredField);
@@ -283,7 +292,7 @@ const Form: FC = () => {
     <div className="flex flex-col justify-center items-center w-9/12 ">
       <form className="w-full mb-3">
         <div className="w-full px-3">
-          <InputID deviceID={form.id} onChangeForm={onChangeForm} status={status} />
+          <InputID deviceID={form.id} onChangeForm={onChangeForm} status={status} isDisable={isRecordMode ? isProcessing : false}/>
         </div>
         {isRecordMode ? (
           <div className="flex flex-wrap ">
@@ -311,7 +320,7 @@ const Form: FC = () => {
         )}
       </form>
       {<ButtonStatus status={status} onCheckDevice={systemMode === "record" ? onRecord : onCheck} onClear={onClear} />}
-      {isProcessing && <ProcessText text={processText} /> && isRecordMode}
+      {isProcessing && <ProcessText text={processText} />}
       <ClearButton onClick={onClear} />
     </div>
   );
