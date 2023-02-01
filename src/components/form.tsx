@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@apollo/client";
 import { UPDATE_LOCATION } from "../api/mutationGQL";
+import { centerCoordinate, maxCoordinate } from "../api/config";
 
 interface ButtonStatusProps {
   status: string;
@@ -66,8 +67,6 @@ const coordinateToKilometers = (position_a: [number, number], position_b: [numbe
   return c * r;
 };
 
-const centerCoordinate: [number, number] = [18.787237, 98.986587]; // Wat Chedi Luang Chiang Mai.
-const maxCoordinate: [number, number] = [18.872823, 98.781724];
 
 const maxDistance: number = coordinateToKilometers(centerCoordinate, maxCoordinate);
 
