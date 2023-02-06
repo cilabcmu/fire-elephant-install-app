@@ -19,8 +19,10 @@ function App() {
 
   return (
     <StatusContext.Provider value={{ status, setStatus, isOpenDrawer, setOpenDrawer, isAutoGPS, setAutoGPS, systemMode, setSystemMode }}>
-      <div className="font-prompt flex flex-col justify-top items-center w-full h-screen ">
+      <div className="font-prompt flex flex-col justify-top items-center w-full ">
         <Menu />
+      </div>
+      <div className="font-prompt flex flex-col justify-top items-center w-full h-screen ">
         <Status />
         <Form />
       </div>

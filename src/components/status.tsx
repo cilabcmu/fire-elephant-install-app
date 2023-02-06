@@ -7,7 +7,7 @@ import { useStatusContext } from "../App";
 interface StatusProps {}
 
 const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
-  const boxStyle = "flex justify-center items-center box-content h-32 w-32 p-4  border border-8 rounded-3xl";
+  const boxStyle = "flex justify-center items-center box-content h-3/5 w-3/6 p-5 border border-8 rounded-3xl";
   const textStyle = "flex justify-center items-center mt-5 text-2xl font-medium`";
   const isRecordMode: boolean = systemMode === "record";
   switch (status) {
@@ -15,7 +15,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
       return (
         <>
           <div className={`${boxStyle} border-blue-500`}>
-            <FontAwesomeIcon className="animate-spin h-24 text-blue-500" icon={faCircleNotch} />
+            <FontAwesomeIcon className="animate-spin h-4/6 text-blue-500" icon={faCircleNotch} />
           </div>
           <div className={`${textStyle}`}>กำลังตรวจสอบ...</div>
         </>
@@ -25,7 +25,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
         <>
           <div className={`${boxStyle} border-blue-500`}>
             <FontAwesomeIcon
-              className="h-24 text-blue-500 transition-colors duration-200 ease-in"
+              className="h-4/6 text-blue-500 transition-colors duration-200 ease-in"
               icon={isRecordMode ? faMicrochip : faFingerprint}
             />
           </div>
@@ -36,7 +36,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
       return (
         <>
           <div className={`${boxStyle} border-green-500`}>
-            <FontAwesomeIcon className="h-24 text-green-500" icon={faLocationDot} />
+            <FontAwesomeIcon className="h-4/6 text-green-500" icon={faLocationDot} />
           </div>
           <div className={`${textStyle}`}>{isRecordMode ? "ติดตั้งสำเร็จ" : "ติดตั้งแล้ว"}</div>
         </>
@@ -46,7 +46,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
       return (
         <>
           <div className={`${boxStyle} border-orange-500`}>
-            <FontAwesomeIcon className="h-24 text-orange-500 " icon={faCircleExclamation} />
+            <FontAwesomeIcon className="h-4/6 text-orange-500 " icon={faCircleExclamation} />
           </div>
           <div className={`${textStyle}`}>{isRecordMode ? "ติดตั้งไม่สำเร็จ" : "ยังไม่ถูกติดตั้ง"}</div>
         </>
@@ -56,7 +56,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
       return (
         <>
           <div className={`${boxStyle} border-red-500`}>
-            <FontAwesomeIcon className="h-24 text-red-500" icon={faXmark} />
+            <FontAwesomeIcon className="h-4/6 text-red-500" icon={faXmark} />
           </div>
           <div className={`${textStyle}`}>ไม่พบอุปกรณ์ในระบบ</div>
         </>
@@ -67,7 +67,7 @@ const statusIcon = (status: string, systemMode: SYSTEM_MODE_TYPE) => {
 const Status: FC<StatusProps> = () => {
   const { status, systemMode } = useStatusContext() as StatusContextType;
 
-  return <div className="flex flex-col justify-center items-center w-full p-5 ">{statusIcon(status, systemMode)}</div>;
+  return <div className="flex flex-col justify-center items-center w-full p-2 h-2/5">{statusIcon(status, systemMode)}</div>;
 };
 
 export default Status;
