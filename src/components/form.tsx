@@ -3,7 +3,7 @@ import { useStatusContext } from "../App";
 import { FormType, useForm } from "../hooks/useForm";
 import { STATUS, StatusContextType, UpdateLocationCheckSDType } from "../public/type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faLocationArrow,} from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@apollo/client";
 import { UPDATE_LOCATION } from "../api/mutationGQL";
 import { centerCoordinate, maxCoordinate } from "../api/config";
@@ -14,7 +14,7 @@ interface ButtonStatusProps {
   onClear?: () => void;
 }
 
-interface ClearButtonProps {
+interface ButtonProps {
   onClick?: () => void;
 }
 
@@ -22,7 +22,7 @@ interface InputIDProps {
   deviceID: string | undefined;
   onChangeForm: (event: ChangeEvent<HTMLInputElement>) => void;
   status: string;
-  isDisable: boolean
+  isDisable: boolean;
 }
 
 interface InputCoordinateProps {
@@ -40,6 +40,8 @@ enum ProcessTextType {
   gps = "กำลังตรวจสอบ GPS",
   requiredField = "* กรุณากรอกให้ครบ",
   locationOutArea = "* ตำแหน่งอุปกรณ์เกินขอบเขต",
+  clipboardComplete = "วางคลิปบอร์ดสำเร็จ",
+  clipboardInComplete = "วางคลิปบอร์ดสำเร็จ"
 }
 
 const coordinateToKilometers = (position_a: [number, number], position_b: [number, number]): number => {
@@ -67,11 +69,10 @@ const coordinateToKilometers = (position_a: [number, number], position_b: [numbe
   return c * r;
 };
 
-
 const maxDistance: number = coordinateToKilometers(centerCoordinate, maxCoordinate);
 
 const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear }) => {
-  const buttonStyle = "w-44 text-white py-2 px-4 rounded-lg";
+  const buttonStyle = "w-44 text-white py-3 px-4 rounded-lg";
   switch (status) {
     case STATUS.waitID:
       return (
@@ -104,6 +105,16 @@ const ButtonStatus: FC<ButtonStatusProps> = ({ status, onCheckDevice, onClear })
         </button>
       );
   }
+};
+
+const ButtonClipboard: FC<ButtonProps> = ({ onClick }) => {
+  return (
+    <div className="flex justify-center grow">
+      <div className="flex relative justify-center py-4 w-5/6 bg-gray-200 rounded-lg" onClick={onClick}>
+        <FontAwesomeIcon className="" icon={faLocationArrow} />
+      </div>
+    </div>
+  );
 };
 
 const InputID: FC<InputIDProps> = ({ deviceID, onChangeForm, status, isDisable }) => {
@@ -142,6 +153,7 @@ const InputCoordinate: FC<InputCoordinateProps> = ({ labelId, labelText, coordin
         value={coordinate}
         onChange={onChangeCoordinate}
         disabled={isDisable}
+        maxLength={9}
       />
     </>
   );
@@ -162,7 +174,7 @@ const ProcessText: FC<ProcessTextProps> = ({ text }) => {
   );
 };
 
-const ClearButton: FC<ClearButtonProps> = ({ onClick }) => {
+const ClearButton: FC<ButtonProps> = ({ onClick }) => {
   return (
     <div className="flex flex-row text-neutral-400 text-md" onClick={onClick}>
       <p className="pt-2 underline underline-offset-4">ล้างข้อมูล</p>
@@ -175,6 +187,8 @@ const initForm: FormType = {
   lat: "",
   long: "",
 };
+
+const regexExp: RegExp = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/gi;
 
 const Form: FC = () => {
   const [updateLocation, { data, loading, error }] = useMutation(UPDATE_LOCATION);
@@ -191,7 +205,7 @@ const Form: FC = () => {
 
   const disableLatLong: boolean = (isProcessing && processText === ProcessTextType.gps) || status == STATUS.found;
 
-  const isRecordMode: boolean = systemMode === 'record'
+  const isRecordMode: boolean = systemMode === "record";
 
   if (isAutoGPS && !form?.lat && !form?.long && isProcessing) {
     navigator.geolocation.getCurrentPosition(
@@ -205,7 +219,7 @@ const Form: FC = () => {
         setIsProcessing(false);
       },
       (err) => {
-        console.log('fetch gps err:',err.message);
+        console.log("fetch gps err:", err.message);
         setIsProcessing(false);
       },
       {
@@ -249,19 +263,29 @@ const Form: FC = () => {
 
   const onCheck: () => Promise<void> = async () => {
     if (form.id) {
-      
       await updateLocation({
         variables: {
           lat: -1,
           lng: -1,
           dn_v: parseInt(form?.id),
-        }
+        },
       });
 
       return;
     }
     setProcessText(ProcessTextType.requiredField);
     setIsProcessing(true);
+  };
+
+  const onPasteClipboard = async () => {
+    const coordinate: string = await navigator.clipboard.readText();
+    const isCoordinateFormat: boolean = regexExp.test(coordinate);
+    if (isCoordinateFormat) {
+      const coordinate_split: string[] = coordinate.split(", ");
+      const lat: string = coordinate_split[0].slice(0, 9);
+      const long: string = coordinate_split[1].slice(0, 9);
+      setForm({ ...form, lat: lat, long: long });
+    }
   };
 
   if (error) console.log("error:", error);
@@ -291,7 +315,7 @@ const Form: FC = () => {
     <div className="flex flex-col justify-center items-center w-9/12 ">
       <form className="w-full mb-3">
         <div className="w-full px-3">
-          <InputID deviceID={form.id} onChangeForm={onChangeForm} status={status} isDisable={isRecordMode ? isProcessing : false}/>
+          <InputID deviceID={form.id} onChangeForm={onChangeForm} status={status} isDisable={isRecordMode ? isProcessing : false} />
         </div>
         {isRecordMode ? (
           <div className="flex flex-wrap ">
@@ -318,7 +342,10 @@ const Form: FC = () => {
           <></>
         )}
       </form>
-      {<ButtonStatus status={status} onCheckDevice={systemMode === "record" ? onRecord : onCheck} onClear={onClear} />}
+      <div className="flex flex-row justify-center items-center w-5/6">
+        <ButtonStatus status={status} onCheckDevice={systemMode === "record" ? onRecord : onCheck} onClear={onClear} />
+        {isRecordMode && <ButtonClipboard onClick={onPasteClipboard} />}
+      </div>
       {isProcessing && <ProcessText text={processText} />}
       <ClearButton onClick={onClear} />
     </div>
