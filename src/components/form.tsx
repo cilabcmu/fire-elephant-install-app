@@ -240,7 +240,6 @@ const Form: FC = () => {
   const onRecord: () => Promise<void> = async () => {
     if (!isEmpty) {
       const distanceFromCenter: number = coordinateToKilometers([parseFloat(form?.lat), parseFloat(form?.long)], centerCoordinate);
-
       if (distanceFromCenter >= maxDistance) {
         setProcessText(ProcessTextType.locationOutArea);
         setIsProcessing(true);

@@ -7,7 +7,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const centerCoordinate: [number, number] = [18.518710, 99.115388]; // Chiang Mai University “Hariphunchai” Centre, Lamphun Province
-const maxCoordinate: [number, number] = [18.670660, 98.912899]; // Big C Hangdong
+
+// ? the coordinate must be in range Thailand
+const centerCoordinate: [number, number] = [15.633079341971834, 100.68963610488117]; 
+const maxCoordinate: [number, number] = [14.474720650380878, 105.52024567646404];
 
 export { client, centerCoordinate, maxCoordinate };
