@@ -1,10 +1,7 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useStatusContext } from "../../App";
-import { useDrawer } from "../../hooks/useDrawer";
 import { StatusContextType, SYSTEM_MODE_TYPE } from "../../public/type";
-import Drawer from "../drawer";
+
 
 interface ToggleBtnProps {
   systemMode: SYSTEM_MODE_TYPE;
@@ -12,12 +9,11 @@ interface ToggleBtnProps {
 }
 
 const ToggleBtn: FC<ToggleBtnProps> = ({ systemMode, onChangeMode }) => {
-
   const isRecordMode: boolean = systemMode === "record";
 
   const isCheckingMode: boolean = !isRecordMode;
 
-  const activeClass: string = `${isRecordMode ? 'bg-yellow-500' : 'bg-green-500'} rounded-full text-white`
+  const activeClass: string = `${isRecordMode ? "bg-yellow-500" : "bg-green-500"} rounded-full text-white`;
 
   return (
     <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
@@ -44,7 +40,7 @@ const ToggleBtn: FC<ToggleBtnProps> = ({ systemMode, onChangeMode }) => {
 };
 
 const Menu: FC = () => {
-  const { setOpenDrawer, isAutoGPS, setAutoGPS, systemMode, setSystemMode } = useStatusContext() as StatusContextType;
+  const { isAutoGPS, setAutoGPS, systemMode, setSystemMode } = useStatusContext() as StatusContextType;
 
   return (
     <div className="flex flex-row justify-between items-end p-5 w-full">
@@ -60,10 +56,6 @@ const Menu: FC = () => {
           Auto GPS
         </label>
       </div>
-
-      {/* <div className="flex justify-center p-2 bg-gray-100 rounded-lg" onClick={() => setOpenDrawer(true)}>
-        <FontAwesomeIcon className="h-5 w-5 text-gray-600" icon={faBars} />
-      </div> */}
       <div className="flex">
         <ToggleBtn systemMode={systemMode} onChangeMode={setSystemMode} />
       </div>

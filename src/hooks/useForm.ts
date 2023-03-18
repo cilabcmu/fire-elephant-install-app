@@ -1,10 +1,10 @@
 import { ChangeEvent, useState } from "react";
 
 export type FormType = {
-  id: string 
-  lat: string 
-  long: string 
-  // [key: string]: number;
+  id: string;
+  lat: string;
+  long: string;
+  [key: string]: string;
 };
 export const useForm = (initValue: FormType) => {
   const [form, setForm] = useState<FormType>(initValue);
@@ -15,5 +15,11 @@ export const useForm = (initValue: FormType) => {
 
   const onClear = () => setForm(initValue);
 
-  return [form, onChangeForm, setForm, onClear] as const;
+  const checkFormValues = () =>
+    Object.keys(form).reduce((result, key) => {
+      result[key] = form[key] ? true : false;
+      return result;
+    }, {} as { [key: string]: boolean });
+
+  return [form, onChangeForm, setForm, onClear, checkFormValues()] as const;
 };

@@ -13,8 +13,6 @@ export { STATUS };
 export interface StatusContextType {
   status: STATUS | string;
   setStatus: (value: STATUS) => void;
-  isOpenDrawer: boolean;
-  setOpenDrawer: (value: boolean) => void;
   isAutoGPS: boolean;
   setAutoGPS: () => void;
   systemMode: SYSTEM_MODE_TYPE;
